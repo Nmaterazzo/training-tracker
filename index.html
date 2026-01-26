@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>24-Week Training Program</title>
+    <title>24-Week Training + Tracking</title>
     <style>
         * {
             margin: 0;
@@ -43,6 +43,43 @@
             font-size: 0.95rem;
         }
 
+        /* Main Tabs */
+        .main-tabs {
+            display: flex;
+            gap: 8px;
+            margin: 20px 0 10px;
+            border-bottom: 2px solid #334155;
+        }
+
+        .main-tab {
+            flex: 1;
+            padding: 12px;
+            background: #1e293b;
+            border: none;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            color: #94a3b8;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .main-tab.active {
+            background: #334155;
+            color: #60a5fa;
+            border-bottom: 2px solid #60a5fa;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Phase/Week Selectors */
         .phase-selector {
             display: flex;
             gap: 6px;
@@ -109,12 +146,36 @@
             color: white;
         }
 
+        .week-btn.logged {
+            border: 2px solid #10b981;
+            position: relative;
+        }
+
+        .week-btn.logged::after {
+            content: '✓';
+            position: absolute;
+            top: 2px;
+            right: 4px;
+            font-size: 0.7rem;
+            color: #10b981;
+        }
+
+        /* Cards */
         .day-card {
             background: #1e293b;
             border-radius: 12px;
             padding: 20px;
             margin-bottom: 15px;
             border: 1px solid #334155;
+        }
+
+        .measurement-card {
+            background: #1e293b;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 1px solid #334155;
+            border-left: 4px solid #f59e0b;
         }
 
         .day-header {
@@ -132,6 +193,13 @@
             color: #60a5fa;
         }
 
+        .measurement-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #f59e0b;
+            margin-bottom: 15px;
+        }
+
         .day-type {
             font-size: 0.85rem;
             color: #94a3b8;
@@ -140,6 +208,7 @@
             border-radius: 12px;
         }
 
+        /* Exercise Sections */
         .section {
             margin: 15px 0;
         }
@@ -245,6 +314,155 @@
             color: #fbbf24;
         }
 
+        /* Measurement Inputs */
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin: 15px 0;
+        }
+
+        .input-group {
+            margin: 0;
+        }
+
+        .input-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .input-label {
+            display: block;
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin-bottom: 6px;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 10px;
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            color: #e2e8f0;
+            font-size: 0.95rem;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #60a5fa;
+        }
+
+        .input-field.saved {
+            border-color: #10b981;
+            background: #064e3b;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 12px;
+            background: #3b82f6;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 15px;
+        }
+
+        .btn-primary:hover {
+            background: #2563eb;
+        }
+
+        .btn-danger {
+            width: 100%;
+            padding: 10px;
+            background: #dc2626;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+
+        .btn-danger:hover {
+            background: #b91c1c;
+        }
+
+        /* Charts Tab */
+        .chart-container {
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 15px 0;
+            border: 1px solid #334155;
+        }
+
+        .chart-title {
+            font-size: 1.1rem;
+            color: #60a5fa;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin: 15px 0;
+        }
+
+        .stat-box {
+            background: #0f172a;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 3px solid #3b82f6;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #60a5fa;
+        }
+
+        .stat-change {
+            font-size: 0.85rem;
+            margin-top: 4px;
+        }
+
+        .stat-change.positive {
+            color: #10b981;
+        }
+
+        .stat-change.negative {
+            color: #ef4444;
+        }
+
+        canvas {
+            max-width: 100%;
+            height: 250px !important;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #64748b;
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
         .footer {
             text-align: center;
             padding: 30px 20px;
@@ -267,39 +485,84 @@
                 text-align: left;
             }
 
-            .phase-btn {
+            .phase-btn, .main-tab {
                 font-size: 0.75rem;
                 min-width: 100px;
             }
+
+            .stat-grid, .input-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 <body>
     <header>
-        <h1>🏋️ 24-Week Training Program</h1>
-        <p class="subtitle">Foundation → Volume → Strength → Upper/Lower Split 💪</p>
+        <h1>🏋️ 24-Week Training + Tracking</h1>
+        <p class="subtitle">Complete program with integrated measurements 💪</p>
     </header>
 
     <div class="container">
-        <div class="phase-selector" id="phaseSelector">
-            <button class="phase-btn active" onclick="showPhase('foundation')">Phase 1<br><small>Weeks 1-4</small></button>
-            <button class="phase-btn" onclick="showPhase('volume')">Phase 2<br><small>Weeks 5-8</small></button>
-            <button class="phase-btn" onclick="showPhase('strength')">Phase 3<br><small>Weeks 9-12</small></button>
-            <button class="phase-btn" onclick="showPhase('upperlower')">Phase 4<br><small>Weeks 13-24</small></button>
+        <div class="main-tabs">
+            <button class="main-tab active" onclick="showMainTab('workouts')">📅 Program</button>
+            <button class="main-tab" onclick="showMainTab('progress')">📈 Progress</button>
         </div>
 
-        <div class="week-selector" id="weekSelector"></div>
+        <!-- WORKOUTS TAB -->
+        <div id="workouts-tab" class="tab-content active">
+            <div class="phase-selector" id="phaseSelector">
+                <button class="phase-btn active" onclick="showPhase('foundation')">Phase 1<br><small>Weeks 1-4</small></button>
+                <button class="phase-btn" onclick="showPhase('volume')">Phase 2<br><small>Weeks 5-8</small></button>
+                <button class="phase-btn" onclick="showPhase('strength')">Phase 3<br><small>Weeks 9-12</small></button>
+                <button class="phase-btn" onclick="showPhase('upperlower')">Phase 4<br><small>Weeks 13-24</small></button>
+            </div>
 
-        <div id="weekContent"></div>
+            <div class="week-selector" id="weekSelector"></div>
+
+            <div id="weekContent"></div>
+        </div>
+
+        <!-- PROGRESS TAB -->
+        <div id="progress-tab" class="tab-content">
+            <div class="chart-container" id="statsContainer">
+                <div class="chart-title">📊 Overall Progress</div>
+                <div class="stat-grid" id="statsGrid">
+                    <div class="empty-state" style="grid-column: 1 / -1;">
+                        <div class="empty-state-icon">📏</div>
+                        <div>No measurements yet.<br>Log your first week!</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-title">⚖️ Bodyweight Trend</div>
+                <canvas id="weightChart"></canvas>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-title">📏 Waist Measurement</div>
+                <canvas id="waistChart"></canvas>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-title">💪 Arms (Flexed)</div>
+                <canvas id="armsChart"></canvas>
+            </div>
+
+            <button class="btn-danger" onclick="confirmClearData()">🗑️ Clear All Measurements</button>
+        </div>
     </div>
 
     <div class="footer">
-        24-week complete beginner-to-intermediate program | Big arms guaranteed 💪
+        24-week program | Measurements saved in browser | Data persists across sessions
     </div>
 
     <script>
         let currentPhase = 'foundation';
         let currentWeek = 1;
+        let measurements = {};
+        let charts = {};
 
         const phaseWeeks = {
             'foundation': [1, 2, 3, 4],
@@ -308,7 +571,7 @@
             'upperlower': [13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]
         };
 
-        // Weight progressions for weeks 1-12 (from previous plan)
+        // Weight progressions for weeks 1-12
         const weights = {
             backSquat: [65, 75, 85, 95, 105, 115, 125, 135, 95, 145, 155, 165],
             frontSquat: [65, 75, 85, 95, 105, 115, 125, 135, 95, 145, 155, 165],
@@ -324,22 +587,46 @@
             14: { squat: 185, bench: 105, deadlift: 195, frontSquat: 185, row: 90, curl: 55, cgBench: 85, hammerCurl: 27.5, ohExtension: 37.5 },
             15: { squat: 195, bench: 110, deadlift: 205, frontSquat: 195, row: 95, curl: 60, cgBench: 90, hammerCurl: 30, ohExtension: 40 },
             16: { squat: 205, bench: 115, deadlift: 215, frontSquat: 205, row: 100, curl: 62.5, cgBench: 95, hammerCurl: 32.5, ohExtension: 42.5 },
-            17: { squat: 145, bench: 80, deadlift: 150, frontSquat: 145, row: 70, curl: 45, cgBench: 65, hammerCurl: 22.5, ohExtension: 30 }, // DELOAD
+            17: { squat: 145, bench: 80, deadlift: 150, frontSquat: 145, row: 70, curl: 45, cgBench: 65, hammerCurl: 22.5, ohExtension: 30 },
             18: { squat: 215, bench: 120, deadlift: 225, frontSquat: 215, row: 105, curl: 65, cgBench: 100, hammerCurl: 35, ohExtension: 45 },
             19: { squat: 225, bench: 125, deadlift: 235, frontSquat: 225, row: 110, curl: 67.5, cgBench: 105, hammerCurl: 37.5, ohExtension: 47.5 },
             20: { squat: 235, bench: 130, deadlift: 245, frontSquat: 235, row: 115, curl: 70, cgBench: 110, hammerCurl: 40, ohExtension: 50 },
             21: { squat: 245, bench: 135, deadlift: 255, frontSquat: 245, row: 120, curl: 72.5, cgBench: 115, hammerCurl: 42.5, ohExtension: 52.5 },
-            22: { squat: 175, bench: 95, deadlift: 180, frontSquat: 175, row: 85, curl: 50, cgBench: 80, hammerCurl: 30, ohExtension: 37.5 }, // DELOAD
+            22: { squat: 175, bench: 95, deadlift: 180, frontSquat: 175, row: 85, curl: 50, cgBench: 80, hammerCurl: 30, ohExtension: 37.5 },
             23: { squat: 255, bench: 140, deadlift: 265, frontSquat: 255, row: 125, curl: 75, cgBench: 120, hammerCurl: 45, ohExtension: 55 },
             24: { squat: 265, bench: 145, deadlift: 275, frontSquat: 265, row: 130, curl: 77.5, cgBench: 125, hammerCurl: 47.5, ohExtension: 57.5 }
         };
 
+        // Load measurements from localStorage
+        function loadMeasurements() {
+            const saved = localStorage.getItem('trainingMeasurements');
+            if (saved) {
+                try {
+                    measurements = JSON.parse(saved);
+                } catch (e) {
+                    measurements = {};
+                }
+            }
+        }
+
+        // Save measurements to localStorage
+        function saveMeasurements(weekNum) {
+            localStorage.setItem('trainingMeasurements', JSON.stringify(measurements));
+            updateWeekButtons();
+        }
+
+        // Update week buttons to show logged status
+        function updateWeekButtons() {
+            document.querySelectorAll('.week-btn').forEach((btn, idx) => {
+                const weekNum = phaseWeeks[currentPhase][idx];
+                btn.classList.toggle('logged', !!measurements[weekNum]);
+            });
+        }
+
         function generateWeekData(weekNum) {
-            // Weeks 1-12 use old logic
             if (weekNum <= 12) {
                 return generateWeek1to12(weekNum);
             }
-            // Weeks 13-24 use new upper/lower split
             return generateWeek13to24(weekNum);
         }
 
@@ -438,6 +725,7 @@
                     {
                         day: "Sunday",
                         type: "Rest",
+                        measurements: true,
                         checklist: weekNum === 4 ? [
                             "Week 4 Assessment:",
                             "• Weight & waist (target: -1.5-2\")",
@@ -457,8 +745,7 @@
                             "• Ready for Upper/Lower Split Phase 4!"
                         ] : [
                             "4-6k steps",
-                            "Weigh-in (morning, naked)",
-                            "Waist measurement"
+                            "Take measurements below"
                         ]
                     }
                 ]
@@ -595,6 +882,7 @@
                     {
                         day: "Sunday",
                         type: "Rest",
+                        measurements: true,
                         checklist: weekNum === 16 ? [
                             "Week 16 Check-in:",
                             "• Waist measurement",
@@ -616,9 +904,8 @@
                             "",
                             "YOU DID IT! Time to plan next phase."
                         ] : [
-                            "Weigh-in + waist",
-                            "Track arm measurements monthly",
-                            "Recovery check"
+                            "Take measurements below",
+                            "Track arm progress monthly"
                         ]
                     }
                 ]
@@ -628,26 +915,24 @@
         function showPhase(phase) {
             currentPhase = phase;
             
-            // Update phase buttons
             document.querySelectorAll('.phase-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
             event.target.closest('.phase-btn').classList.add('active');
             
-            // Update week selector
             const weekSelector = document.getElementById('weekSelector');
             weekSelector.innerHTML = '';
             
             phaseWeeks[phase].forEach(weekNum => {
                 const btn = document.createElement('button');
                 btn.className = (weekNum === 9 || weekNum === 17 || weekNum === 22) ? 'week-btn deload' : 'week-btn';
+                if (measurements[weekNum]) btn.classList.add('logged');
                 if (weekNum === phaseWeeks[phase][0]) btn.classList.add('active');
                 btn.textContent = `W${weekNum}`;
                 btn.onclick = () => showWeek(weekNum);
                 weekSelector.appendChild(btn);
             });
             
-            // Show first week of phase
             showWeek(phaseWeeks[phase][0]);
         }
 
@@ -656,7 +941,6 @@
             const weekData = generateWeekData(weekNum);
             const content = document.getElementById('weekContent');
             
-            // Update active week button
             document.querySelectorAll('.week-btn').forEach(btn => {
                 btn.classList.remove('active');
                 if (btn.textContent === `W${weekNum}`) {
@@ -733,7 +1017,6 @@
                     html += `</div>`;
                 }
 
-                // Legacy exercises field (for weeks 1-12)
                 if (!day.primaryTitle && day.exercises) {
                     html += `<div class="section">`;
                     html += `<div class="section-title">Strength</div>`;
@@ -795,13 +1078,202 @@
                     html += `</div>`;
                 }
 
+                // ADD MEASUREMENTS SECTION FOR SUNDAY
+                if (day.measurements) {
+                    const savedData = measurements[weekNum] || {};
+                    html += `
+                        <div class="measurement-card">
+                            <div class="measurement-title">📏 Week ${weekNum} Measurements</div>
+                            <div class="input-grid">
+                                <div class="input-group">
+                                    <label class="input-label">Bodyweight (lbs)</label>
+                                    <input type="number" step="0.1" id="weight_${weekNum}" class="input-field ${savedData.weight ? 'saved' : ''}" value="${savedData.weight || ''}" placeholder="260.0">
+                                </div>
+                                <div class="input-group">
+                                    <label class="input-label">Waist (inches)</label>
+                                    <input type="number" step="0.1" id="waist_${weekNum}" class="input-field ${savedData.waist ? 'saved' : ''}" value="${savedData.waist || ''}" placeholder="42.0">
+                                </div>
+                                <div class="input-group">
+                                    <label class="input-label">Arms Flexed (inches)</label>
+                                    <input type="number" step="0.1" id="arms_${weekNum}" class="input-field ${savedData.arms ? 'saved' : ''}" value="${savedData.arms || ''}" placeholder="15.0">
+                                </div>
+                                <div class="input-group">
+                                    <label class="input-label">Chest (inches)</label>
+                                    <input type="number" step="0.1" id="chest_${weekNum}" class="input-field ${savedData.chest ? 'saved' : ''}" value="${savedData.chest || ''}" placeholder="Optional">
+                                </div>
+                                <div class="input-group">
+                                    <label class="input-label">Shoulders (inches)</label>
+                                    <input type="number" step="0.1" id="shoulders_${weekNum}" class="input-field ${savedData.shoulders ? 'saved' : ''}" value="${savedData.shoulders || ''}" placeholder="Optional">
+                                </div>
+                                <div class="input-group">
+                                    <label class="input-label">Thighs (inches)</label>
+                                    <input type="number" step="0.1" id="thighs_${weekNum}" class="input-field ${savedData.thighs ? 'saved' : ''}" value="${savedData.thighs || ''}" placeholder="Optional">
+                                </div>
+                                <div class="input-group full-width">
+                                    <label class="input-label">Notes</label>
+                                    <input type="text" id="notes_${weekNum}" class="input-field" value="${savedData.notes || ''}" placeholder="Sleep quality, energy, soreness, etc.">
+                                </div>
+                            </div>
+                            <button class="btn-primary" onclick="saveWeekMeasurement(${weekNum})">💾 Save Week ${weekNum} Data</button>
+                        </div>
+                    `;
+                }
+
                 html += `</div>`;
             });
 
             content.innerHTML = html;
         }
 
-        // Initialize with Foundation Phase, Week 1
+        function saveWeekMeasurement(weekNum) {
+            const weight = document.getElementById(`weight_${weekNum}`).value;
+            const waist = document.getElementById(`waist_${weekNum}`).value;
+            const arms = document.getElementById(`arms_${weekNum}`).value;
+            
+            if (!weight || !waist || !arms) {
+                alert('Please enter at least Weight, Waist, and Arms!');
+                return;
+            }
+            
+            measurements[weekNum] = {
+                weight: parseFloat(weight),
+                waist: parseFloat(waist),
+                arms: parseFloat(arms),
+                chest: parseFloat(document.getElementById(`chest_${weekNum}`).value) || null,
+                shoulders: parseFloat(document.getElementById(`shoulders_${weekNum}`).value) || null,
+                thighs: parseFloat(document.getElementById(`thighs_${weekNum}`).value) || null,
+                notes: document.getElementById(`notes_${weekNum}`).value,
+                date: new Date().toISOString()
+            };
+            
+            saveMeasurements(weekNum);
+            
+            // Update input styling
+            ['weight', 'waist', 'arms', 'chest', 'shoulders', 'thighs'].forEach(field => {
+                const input = document.getElementById(`${field}_${weekNum}`);
+                if (input && input.value) {
+                    input.classList.add('saved');
+                }
+            });
+            
+            alert(`✅ Week ${weekNum} saved! View progress in the Progress tab.`);
+        }
+
+        function showMainTab(tab) {
+            document.querySelectorAll('.main-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tab + '-tab').classList.add('active');
+            
+            if (tab === 'progress') {
+                renderProgressTab();
+            }
+        }
+
+        function renderProgressTab() {
+            const weeks = Object.keys(measurements).map(Number).sort((a, b) => a - b);
+            
+            if (weeks.length === 0) {
+                document.getElementById('statsGrid').innerHTML = '<div class="empty-state" style="grid-column: 1 / -1;"><div class="empty-state-icon">📏</div><div>No measurements yet.<br>Log your first week!</div></div>';
+                return;
+            }
+            
+            const first = measurements[weeks[0]];
+            const last = measurements[weeks[weeks.length - 1]];
+            const weightChange = last.weight - first.weight;
+            const waistChange = last.waist - first.waist;
+            const armsChange = last.arms - first.arms;
+            
+            document.getElementById('statsGrid').innerHTML = `
+                <div class="stat-box">
+                    <div class="stat-label">Current Weight</div>
+                    <div class="stat-value">${last.weight} lbs</div>
+                    <div class="stat-change ${weightChange < 0 ? 'positive' : 'negative'}">
+                        ${weightChange > 0 ? '+' : ''}${weightChange.toFixed(1)} lbs
+                    </div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Current Waist</div>
+                    <div class="stat-value">${last.waist}"</div>
+                    <div class="stat-change ${waistChange < 0 ? 'positive' : 'negative'}">
+                        ${waistChange > 0 ? '+' : ''}${waistChange.toFixed(1)}"
+                    </div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Current Arms</div>
+                    <div class="stat-value">${last.arms}"</div>
+                    <div class="stat-change ${armsChange > 0 ? 'positive' : 'negative'}">
+                        ${armsChange > 0 ? '+' : ''}${armsChange.toFixed(1)}"
+                    </div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Weeks Logged</div>
+                    <div class="stat-value">${weeks.length}/24</div>
+                </div>
+            `;
+            
+            renderChart('weightChart', weeks.map(w => `W${w}`), weeks.map(w => measurements[w].weight), 'Bodyweight (lbs)', '#3b82f6');
+            renderChart('waistChart', weeks.map(w => `W${w}`), weeks.map(w => measurements[w].waist), 'Waist (inches)', '#f59e0b');
+            renderChart('armsChart', weeks.map(w => `W${w}`), weeks.map(w => measurements[w].arms), 'Arms Flexed (inches)', '#10b981');
+        }
+
+        function renderChart(canvasId, labels, data, label, color) {
+            const ctx = document.getElementById(canvasId);
+            
+            if (charts[canvasId]) {
+                charts[canvasId].destroy();
+            }
+            
+            charts[canvasId] = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: label,
+                        data: data,
+                        borderColor: color,
+                        backgroundColor: color + '22',
+                        borderWidth: 3,
+                        tension: 0.4,
+                        fill: true,
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            grid: { color: '#334155' },
+                            ticks: { color: '#94a3b8' }
+                        },
+                        x: {
+                            grid: { color: '#334155' },
+                            ticks: { color: '#94a3b8' }
+                        }
+                    }
+                }
+            });
+        }
+
+        function confirmClearData() {
+            if (confirm('⚠️ Are you sure? This will delete ALL measurements permanently!')) {
+                measurements = {};
+                localStorage.removeItem('trainingMeasurements');
+                updateWeekButtons();
+                renderProgressTab();
+                alert('✅ All measurements cleared!');
+            }
+        }
+
+        // Initialize
+        loadMeasurements();
         showPhase('foundation');
     </script>
 </body>
