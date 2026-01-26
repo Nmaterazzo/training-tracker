@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>24-Week Training Program</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 30px 0 20px;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            color: #60a5fa;
+        }
+
+        .subtitle {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        .phase-selector {
+            display: flex;
+            gap: 6px;
+            margin: 20px 0 10px;
+            overflow-x: auto;
+            padding: 10px 0;
+        }
+
+        .phase-btn {
+            flex: 1;
+            min-width: 110px;
+            padding: 10px 6px;
+            background: #1e293b;
+            border: 2px solid #334155;
+            border-radius: 8px;
+            color: #94a3b8;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.8rem;
+        }
+
+        .phase-btn.active {
+            background: #7c3aed;
+            border-color: #a78bfa;
+            color: white;
+        }
+
+        .week-selector {
+            display: flex;
+            gap: 6px;
+            margin: 10px 0 20px;
+            overflow-x: auto;
+            padding: 10px 0;
+        }
+
+        .week-btn {
+            flex: 1;
+            min-width: 60px;
+            padding: 10px 6px;
+            background: #1e293b;
+            border: 2px solid #334155;
+            border-radius: 8px;
+            color: #94a3b8;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.8rem;
+        }
+
+        .week-btn.active {
+            background: #3b82f6;
+            border-color: #60a5fa;
+            color: white;
+        }
+
+        .week-btn.deload {
+            background: #ea580c;
+            border-color: #fb923c;
+        }
+
+        .week-btn.deload.active {
+            background: #dc2626;
+            color: white;
+        }
+
+        .day-card {
+            background: #1e293b;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 1px solid #334155;
+        }
+
+        .day-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #334155;
+        }
+
+        .day-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #60a5fa;
+        }
+
+        .day-type {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            background: #0f172a;
+            padding: 4px 12px;
+            border-radius: 12px;
+        }
+
+        .section {
+            margin: 15px 0;
+        }
+
+        .section-title {
+            font-size: 0.9rem;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .section-title.arms {
+            color: #f59e0b;
+            background: #422006;
+            padding: 6px 10px;
+            border-radius: 6px;
+            border-left: 3px solid #f59e0b;
+        }
+
+        .exercise-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            margin: 8px 0;
+            background: #0f172a;
+            border-radius: 8px;
+            border-left: 3px solid #3b82f6;
+        }
+
+        .exercise-row.arm-exercise {
+            border-left: 3px solid #f59e0b;
+            background: #1c1917;
+        }
+
+        .exercise-name {
+            font-weight: 500;
+            color: #e2e8f0;
+        }
+
+        .exercise-specs {
+            color: #60a5fa;
+            font-weight: 600;
+            text-align: right;
+        }
+
+        .exercise-specs.arm-specs {
+            color: #fbbf24;
+        }
+
+        .exercise-sets {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            display: block;
+        }
+
+        .warmup-item {
+            padding: 8px 12px;
+            margin: 6px 0;
+            background: #0f172a;
+            border-radius: 6px;
+            color: #cbd5e1;
+            font-size: 0.9rem;
+        }
+
+        .walk-card {
+            background: linear-gradient(135deg, #065f46 0%, #064e3b 100%);
+            border: 1px solid #047857;
+        }
+
+        .rest-card {
+            background: linear-gradient(135deg, #7c2d12 0%, #78350f 100%);
+            border: 1px solid #ea580c;
+        }
+
+        .deload-card {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            border: 1px solid #f87171;
+        }
+
+        .checklist {
+            margin-top: 10px;
+        }
+
+        .checklist-item {
+            padding: 10px;
+            background: #0f172a;
+            border-radius: 6px;
+            margin: 6px 0;
+            font-size: 0.9rem;
+            color: #cbd5e1;
+        }
+
+        .progression-note {
+            background: #422006;
+            border: 1px solid #ea580c;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 15px 0;
+            font-size: 0.9rem;
+            color: #fbbf24;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 30px 20px;
+            color: #64748b;
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .exercise-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+            
+            .exercise-specs {
+                text-align: left;
+            }
+
+            .phase-btn {
+                font-size: 0.75rem;
+                min-width: 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🏋️ 24-Week Training Program</h1>
+        <p class="subtitle">Foundation → Volume → Strength → Upper/Lower Split 💪</p>
+    </header>
+
+    <div class="container">
+        <div class="phase-selector" id="phaseSelector">
+            <button class="phase-btn active" onclick="showPhase('foundation')">Phase 1<br><small>Weeks 1-4</small></button>
+            <button class="phase-btn" onclick="showPhase('volume')">Phase 2<br><small>Weeks 5-8</small></button>
+            <button class="phase-btn" onclick="showPhase('strength')">Phase 3<br><small>Weeks 9-12</small></button>
+            <button class="phase-btn" onclick="showPhase('upperlower')">Phase 4<br><small>Weeks 13-24</small></button>
+        </div>
+
+        <div class="week-selector" id="weekSelector"></div>
+
+        <div id="weekContent"></div>
+    </div>
+
+    <div class="footer">
+        24-week complete beginner-to-intermediate program | Big arms guaranteed 💪
+    </div>
+
+    <script>
+        let currentPhase = 'foundation';
+        let currentWeek = 1;
+
+        const phaseWeeks = {
+            'foundation': [1, 2, 3, 4],
+            'volume': [5, 6, 7, 8],
+            'strength': [9, 10, 11, 12],
+            'upperlower': [13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]
+        };
+
+        // Weight progressions for weeks 1-12 (from previous plan)
+        const weights = {
+            backSquat: [65, 75, 85, 95, 105, 115, 125, 135, 95, 145, 155, 165],
+            frontSquat: [65, 75, 85, 95, 105, 115, 125, 135, 95, 145, 155, 165],
+            bench: [45, 50, 55, 60, 65, 70, 75, 80, 55, 85, 90, 95],
+            row: [45, 50, 55, 60, 65, 70, 75, 80, 55, 85, 90, 95],
+            ohp: [45, 50, 55, 60, 65, 70, 75, 80, 55, 85, 90, 95],
+            rdl: [65, 75, 85, 95, 105, 115, 125, 135, 95, 145, 155, 165]
+        };
+
+        // Weeks 13-24 weights (upper/lower split)
+        const weightsUL = {
+            13: { squat: 175, bench: 100, deadlift: 185, frontSquat: 175, row: 85, curl: 50, cgBench: 80, hammerCurl: 25, ohExtension: 35 },
+            14: { squat: 185, bench: 105, deadlift: 195, frontSquat: 185, row: 90, curl: 55, cgBench: 85, hammerCurl: 27.5, ohExtension: 37.5 },
+            15: { squat: 195, bench: 110, deadlift: 205, frontSquat: 195, row: 95, curl: 60, cgBench: 90, hammerCurl: 30, ohExtension: 40 },
+            16: { squat: 205, bench: 115, deadlift: 215, frontSquat: 205, row: 100, curl: 62.5, cgBench: 95, hammerCurl: 32.5, ohExtension: 42.5 },
+            17: { squat: 145, bench: 80, deadlift: 150, frontSquat: 145, row: 70, curl: 45, cgBench: 65, hammerCurl: 22.5, ohExtension: 30 }, // DELOAD
+            18: { squat: 215, bench: 120, deadlift: 225, frontSquat: 215, row: 105, curl: 65, cgBench: 100, hammerCurl: 35, ohExtension: 45 },
+            19: { squat: 225, bench: 125, deadlift: 235, frontSquat: 225, row: 110, curl: 67.5, cgBench: 105, hammerCurl: 37.5, ohExtension: 47.5 },
+            20: { squat: 235, bench: 130, deadlift: 245, frontSquat: 235, row: 115, curl: 70, cgBench: 110, hammerCurl: 40, ohExtension: 50 },
+            21: { squat: 245, bench: 135, deadlift: 255, frontSquat: 245, row: 120, curl: 72.5, cgBench: 115, hammerCurl: 42.5, ohExtension: 52.5 },
+            22: { squat: 175, bench: 95, deadlift: 180, frontSquat: 175, row: 85, curl: 50, cgBench: 80, hammerCurl: 30, ohExtension: 37.5 }, // DELOAD
+            23: { squat: 255, bench: 140, deadlift: 265, frontSquat: 255, row: 125, curl: 75, cgBench: 120, hammerCurl: 45, ohExtension: 55 },
+            24: { squat: 265, bench: 145, deadlift: 275, frontSquat: 265, row: 130, curl: 77.5, cgBench: 125, hammerCurl: 47.5, ohExtension: 57.5 }
+        };
+
+        function generateWeekData(weekNum) {
+            // Weeks 1-12 use old logic
+            if (weekNum <= 12) {
+                return generateWeek1to12(weekNum);
+            }
+            // Weeks 13-24 use new upper/lower split
+            return generateWeek13to24(weekNum);
+        }
+
+        function generateWeek1to12(weekNum) {
+            const idx = weekNum - 1;
+            const sets = weekNum === 1 ? 1 : weekNum === 9 ? 2 : weekNum >= 2 && weekNum <= 4 ? 2 : 3;
+            const reps = weekNum <= 4 ? '8-12' : weekNum <= 8 ? '6-10' : weekNum === 9 ? '6-8' : '5-8';
+            const isDeload = weekNum === 9;
+            
+            let progression = '';
+            if (weekNum === 1) progression = `${sets} set × ${reps} reps | RPE 2-3 | Focus: Movement quality`;
+            else if (weekNum >= 2 && weekNum <= 4) progression = `${sets} sets × ${reps} reps | RPE 3-5 | Building work capacity`;
+            else if (weekNum <= 8) progression = `${sets} sets × ${reps} reps | RPE 6-7 | Volume + strength`;
+            else if (weekNum === 9) progression = `${sets} sets × ${reps} reps | 70% weights | DELOAD WEEK - Recovery`;
+            else progression = `${sets} sets × ${reps} reps | RPE 7-8 | Pure strength focus`;
+
+            const walkSpeed = weekNum <= 4 ? [2.2, 2.3, 2.4, 2.5, 2.0] :
+                             weekNum <= 8 ? [2.4, 2.5, 2.6, 2.7, 2.0] :
+                             weekNum === 9 ? [2.0, 2.0, 2.0, 2.0, 2.0] :
+                             [2.5, 2.6, 2.7, 2.8, 2.0];
+            
+            const walkIncline = weekNum <= 2 ? 0 : weekNum === 9 ? 0 : weekNum <= 4 ? 1 : 2;
+            const walkDuration = weekNum === 9 ? [20, 20, 20, 20, 20] : [22, 25, 25, 25, 20];
+
+            return {
+                progression: progression,
+                days: [
+                    {
+                        day: "Monday",
+                        type: isDeload ? "Strength A - DELOAD" : "Strength A",
+                        warmup: [
+                            "Treadmill: 2.0mph, 0% × 2min",
+                            "Empty bar: 5 squats, 5 bench, 5 rows, 5 OHP",
+                            "Mental prep: 1min"
+                        ],
+                        exercises: [
+                            { name: "Back squat", weight: `${weights.backSquat[idx]}lb`, sets: `${sets} × ${reps}` },
+                            { name: "Bench press", weight: `${weights.bench[idx]}lb`, sets: `${sets} × ${reps}` },
+                            { name: "Barbell row", weight: `${weights.row[idx]}lb`, sets: `${sets} × ${reps}` },
+                            { name: "Overhead press", weight: `${weights.ohp[idx]}lb`, sets: `${sets} × ${reps}` },
+                            { name: "RDL", weight: `${weights.rdl[idx]}lb`, sets: `${sets} × ${reps}` }
+                        ],
+                        accessory: weekNum >= 3 ? [
+                            "Pallof press: Band × 2×12/side",
+                            "Plank: 2×45sec"
+                        ] : null,
+                        cooldown: `Treadmill: 2.5mph, ${walkIncline}% × 10min`
+                    },
+                    {
+                        day: "Tuesday",
+                        type: "Walk",
+                        walk: `${walkSpeed[0]}mph, ${walkIncline}% incline × ${walkDuration[0]}min`
+                    },
+                    {
+                        day: "Wednesday",
+                        type: "Walk",
+                        walk: `${walkSpeed[1]}mph, ${walkIncline}% incline × ${walkDuration[1]}min`
+                    },
+                    {
+                        day: "Thursday",
+                        type: isDeload ? "Strength B - DELOAD" : "Strength B",
+                        warmup: [
+                            "Treadmill: 2.0mph, 0% × 2min",
+                            "Empty bar: 5 front squats, 5 floor press, 5 rows",
+                            "Bodyweight: 5 split squats/leg"
+                        ],
+                        exercises: [
+                            { name: "Front squat", weight: `${weights.frontSquat[idx]}lb`, sets: `${sets} × ${reps}` },
+                            { name: "Floor press", weight: `${weights.bench[idx]}lb`, sets: `${sets} × ${reps}` },
+                            { name: "Pendlay row", weight: `${weights.row[idx]}lb`, sets: `${sets} × ${reps}` },
+                            { name: "DB lateral raise", weight: `${10 + Math.floor(weekNum/2) * 2.5}/hand`, sets: `${sets} × ${reps}` },
+                            { name: "Bulgarian split squat", weight: weekNum <= 2 ? 'BW' : `${15 + weekNum * 5}lb`, sets: `${sets} × ${reps}/leg` }
+                        ],
+                        accessory: weekNum >= 3 ? [
+                            "Dead bug: 2×12/side",
+                            `Farmer's carry: ${30 + weekNum * 5}lb/hand × ${weekNum === 9 ? '30' : '40'}sec`
+                        ] : weekNum === 1 ? [
+                            "Farmer's carry: 35lb/hand × 30sec (optional)"
+                        ] : [
+                            "Farmer's carry: 35lb/hand × 30sec"
+                        ],
+                        cooldown: `Treadmill: 2.5mph, ${walkIncline}% × 10min`
+                    },
+                    {
+                        day: "Friday",
+                        type: "Walk",
+                        walk: `${walkSpeed[2]}mph, ${walkIncline}% incline × ${walkDuration[2]}min`
+                    },
+                    {
+                        day: "Saturday",
+                        type: weekNum === 9 ? "Rest" : "Active Recovery",
+                        walk: weekNum === 9 ? null : `${walkSpeed[4]}mph, 0% incline × ${walkDuration[4]}min`,
+                        note: weekNum === 9 ? "Full rest day - recovery priority" : (weekNum === 1 ? "Optional - skip if joints hurt >3/10" : null),
+                        checklist: weekNum === 9 ? ["Complete rest - sleep 8+ hours", "Light stretching only", "Prepare for Week 10"] : null
+                    },
+                    {
+                        day: "Sunday",
+                        type: "Rest",
+                        checklist: weekNum === 4 ? [
+                            "Week 4 Assessment:",
+                            "• Weight & waist (target: -1.5-2\")",
+                            "• Joint pain check (<2/10)",
+                            "• Ready for Volume Phase?"
+                        ] : weekNum === 8 ? [
+                            "Week 8 Assessment:",
+                            "• Weight & waist (target: -3-4\")",
+                            "• Strength check",
+                            "• Prepare for Deload Week 9"
+                        ] : weekNum === 12 ? [
+                            "Week 12 FINAL Assessment:",
+                            "• Weight & waist (target: -5-6\")",
+                            "• Strength gains:",
+                            "  - Back squat: 165lb (2.5x start)",
+                            "  - Bench: 95lb (2.1x start)",
+                            "• Ready for Upper/Lower Split Phase 4!"
+                        ] : [
+                            "4-6k steps",
+                            "Weigh-in (morning, naked)",
+                            "Waist measurement"
+                        ]
+                    }
+                ]
+            };
+        }
+
+        function generateWeek13to24(weekNum) {
+            const w = weightsUL[weekNum];
+            const isDeload = weekNum === 17 || weekNum === 22;
+            const sets = isDeload ? 2 : 4;
+            const armSets = isDeload ? 2 : 3;
+            const reps = isDeload ? '6-8' : '5-8';
+            const armReps = isDeload ? '12-15' : '8-12';
+            
+            let progression = '';
+            if (isDeload) {
+                progression = `${sets} sets × ${reps} reps | 70% weights | DELOAD - Full recovery week`;
+            } else if (weekNum <= 16) {
+                progression = `${sets} sets × ${reps} reps | RPE 7-8 | Building strength base for 3x/week`;
+            } else if (weekNum <= 21) {
+                progression = `${sets} sets × ${reps} reps | RPE 8-9 | Peak strength + hypertrophy`;
+            } else {
+                progression = `${sets} sets × ${reps} reps | RPE 8-9 | Final push - test strength Week 24`;
+            }
+
+            return {
+                progression: progression,
+                days: [
+                    {
+                        day: "Monday",
+                        type: isDeload ? "Lower A - DELOAD" : "Lower A - Squat Focus",
+                        warmup: [
+                            "Treadmill: 2.0mph × 2min",
+                            "Empty bar squats × 8",
+                            "Leg swings × 10/leg",
+                            "Light RDL × 8"
+                        ],
+                        primaryTitle: "Primary Strength",
+                        exercises: [
+                            { name: "Back squat", weight: `${w.squat}lb`, sets: `${sets} × ${reps}`, rest: "3min" },
+                            { name: "Romanian deadlift", weight: `${w.squat}lb`, sets: `${sets-1} × 6-10`, rest: "2min" }
+                        ],
+                        secondaryTitle: isDeload ? null : "Secondary Strength",
+                        secondaryExercises: isDeload ? null : [
+                            { name: "Leg press", weight: `${Math.round(w.squat * 1.5)}lb`, sets: `3 × 10-12`, rest: "2min" },
+                            { name: "Lying leg curl", weight: `${Math.round(w.squat * 0.45)}lb`, sets: `3 × 10-12`, rest: "90sec" }
+                        ],
+                        accessory: isDeload ? ["Light stretching × 10min"] : [
+                            "Standing calf raise: 3×12-15",
+                            "Pallof press: 3×12/side"
+                        ],
+                        cooldown: `Treadmill: 2.5mph, ${isDeload ? 0 : 2}% × 10min`,
+                        totalTime: isDeload ? "~35min" : "~50min"
+                    },
+                    {
+                        day: "Tuesday",
+                        type: "Walk",
+                        walk: `${isDeload ? 2.0 : 2.5}mph, ${isDeload ? 0 : 2}% incline × ${isDeload ? 20 : 25}min`
+                    },
+                    {
+                        day: "Wednesday",
+                        type: isDeload ? "Upper A - DELOAD" : "Upper A - Bench + ARMS 💪",
+                        warmup: [
+                            "Band pull-aparts × 20",
+                            "Empty bar bench × 10",
+                            "Arm circles × 10/direction"
+                        ],
+                        primaryTitle: "Primary Strength",
+                        exercises: [
+                            { name: "Barbell bench press", weight: `${w.bench}lb`, sets: `${sets} × ${reps}`, rest: "3min" },
+                            { name: "Barbell row", weight: `${w.row}lb`, sets: `${sets} × 6-10`, rest: "2min" }
+                        ],
+                        secondaryTitle: isDeload ? null : "Secondary Strength",
+                        secondaryExercises: isDeload ? null : [
+                            { name: "Incline DB press", weight: `${Math.round(w.bench * 0.4)}/hand`, sets: `3 × 8-12`, rest: "2min" },
+                            { name: "Lat pulldown", weight: `${Math.round(w.bench * 1.2)}lb`, sets: `3 × 8-12`, rest: "90sec" },
+                            { name: "DB shoulder press", weight: `${Math.round(w.bench * 0.3)}/hand`, sets: `3 × 8-12`, rest: "2min" }
+                        ],
+                        armTitle: "💪 ARM WORK",
+                        armExercises: [
+                            { name: "Barbell curl", weight: `${w.curl}lb`, sets: `${armSets} × ${armReps}`, rest: "90sec", isArm: true },
+                            { name: "Close-grip bench", weight: `${w.cgBench}lb`, sets: `${armSets} × ${armReps}`, rest: "90sec", isArm: true },
+                            { name: "Preacher curl", weight: `${Math.round(w.curl * 0.4)}/hand`, sets: `${armSets} × ${armReps}`, rest: "60sec", isArm: true },
+                            { name: "Rope pushdown", weight: `${Math.round(w.curl * 0.8)}lb`, sets: `${armSets} × ${armReps}`, rest: "60sec", isArm: true }
+                        ],
+                        accessory: isDeload ? null : [
+                            "Face pulls: 3×15-20"
+                        ],
+                        cooldown: `Treadmill: 2.5mph, ${isDeload ? 0 : 2}% × 10min`,
+                        totalTime: isDeload ? "~40min" : "~65min"
+                    },
+                    {
+                        day: "Thursday",
+                        type: "Walk",
+                        walk: `${isDeload ? 2.0 : 2.6}mph, ${isDeload ? 0 : 2}% incline × ${isDeload ? 20 : 25}min`
+                    },
+                    {
+                        day: "Friday",
+                        type: isDeload ? "Lower B - DELOAD" : "Lower B - Deadlift Focus",
+                        warmup: [
+                            "Treadmill: 2.0mph × 2min",
+                            "Cat-cow stretches × 10",
+                            "Light RDL × 8",
+                            "Empty bar deadlift × 5"
+                        ],
+                        primaryTitle: "Primary Strength",
+                        exercises: [
+                            { name: "Conventional deadlift", weight: `${w.deadlift}lb`, sets: `${sets} × ${reps}`, rest: "3min" },
+                            { name: "Front squat", weight: `${w.frontSquat}lb`, sets: `${sets-1} × 6-10`, rest: "2min" }
+                        ],
+                        secondaryTitle: isDeload ? null : "Secondary Strength",
+                        secondaryExercises: isDeload ? null : [
+                            { name: "Bulgarian split squat", weight: `${Math.round(w.deadlift * 0.27)}lb goblet`, sets: `3 × 8-12/leg`, rest: "2min" },
+                            { name: "Leg extension", weight: `${Math.round(w.deadlift * 0.54)}lb`, sets: `3 × 12-15`, rest: "90sec" }
+                        ],
+                        armTitle: "💪 ARM WORK",
+                        armExercises: [
+                            { name: "DB hammer curl", weight: `${w.hammerCurl}/hand`, sets: `${armSets} × ${armReps}`, rest: "90sec", isArm: true },
+                            { name: "Overhead extension", weight: `${w.ohExtension}lb`, sets: `${armSets} × ${armReps}`, rest: "90sec", isArm: true }
+                        ],
+                        accessory: isDeload ? ["Light stretching × 10min"] : [
+                            "Seated calf raise: 3×15-20",
+                            "Hanging knee raise: 3×10-15"
+                        ],
+                        cooldown: `Treadmill: 2.5mph, ${isDeload ? 0 : 2}% × 10min`,
+                        totalTime: isDeload ? "~40min" : "~55min"
+                    },
+                    {
+                        day: "Saturday",
+                        type: isDeload ? "Rest" : "Active Recovery",
+                        walk: isDeload ? null : `2.0mph, 0% incline × 20min`,
+                        checklist: isDeload ? ["Complete rest", "Sleep 8+ hours", "Prep for next block"] : null
+                    },
+                    {
+                        day: "Sunday",
+                        type: "Rest",
+                        checklist: weekNum === 16 ? [
+                            "Week 16 Check-in:",
+                            "• Waist measurement",
+                            "• Barbell curl progress (target: 62.5lb)",
+                            "• Prepare for Deload Week 17"
+                        ] : weekNum === 21 ? [
+                            "Week 21 Check-in:",
+                            "• Waist measurement",
+                            "• Arms feeling pumped?",
+                            "• Prepare for Deload Week 22"
+                        ] : weekNum === 24 ? [
+                            "🎉 WEEK 24 COMPLETE! 🎉",
+                            "Final measurements:",
+                            "• Back squat: 265lb (4x Week 1!)",
+                            "• Bench: 145lb (3.2x Week 1!)",
+                            "• Barbell curl: ~77.5lb",
+                            "• Waist: -6 to -8 inches total",
+                            "• Arm circumference: +0.5-1\"",
+                            "",
+                            "YOU DID IT! Time to plan next phase."
+                        ] : [
+                            "Weigh-in + waist",
+                            "Track arm measurements monthly",
+                            "Recovery check"
+                        ]
+                    }
+                ]
+            };
+        }
+
+        function showPhase(phase) {
+            currentPhase = phase;
+            
+            // Update phase buttons
+            document.querySelectorAll('.phase-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.closest('.phase-btn').classList.add('active');
+            
+            // Update week selector
+            const weekSelector = document.getElementById('weekSelector');
+            weekSelector.innerHTML = '';
+            
+            phaseWeeks[phase].forEach(weekNum => {
+                const btn = document.createElement('button');
+                btn.className = (weekNum === 9 || weekNum === 17 || weekNum === 22) ? 'week-btn deload' : 'week-btn';
+                if (weekNum === phaseWeeks[phase][0]) btn.classList.add('active');
+                btn.textContent = `W${weekNum}`;
+                btn.onclick = () => showWeek(weekNum);
+                weekSelector.appendChild(btn);
+            });
+            
+            // Show first week of phase
+            showWeek(phaseWeeks[phase][0]);
+        }
+
+        function showWeek(weekNum) {
+            currentWeek = weekNum;
+            const weekData = generateWeekData(weekNum);
+            const content = document.getElementById('weekContent');
+            
+            // Update active week button
+            document.querySelectorAll('.week-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.textContent === `W${weekNum}`) {
+                    btn.classList.add('active');
+                }
+            });
+
+            let html = `
+                <div class="progression-note">
+                    <strong>Week ${weekNum} Focus:</strong> ${weekData.progression}
+                </div>
+            `;
+
+            weekData.days.forEach(day => {
+                const cardClass = day.type.includes('Walk') ? 'day-card walk-card' : 
+                                 day.type === 'Rest' ? 'day-card rest-card' :
+                                 day.type.includes('DELOAD') ? 'day-card deload-card' : 'day-card';
+                
+                html += `<div class="${cardClass}">`;
+                html += `
+                    <div class="day-header">
+                        <div class="day-title">${day.day}</div>
+                        <div class="day-type">${day.type}</div>
+                    </div>
+                `;
+
+                if (day.walk) {
+                    html += `<div class="warmup-item">🚶 ${day.walk}</div>`;
+                    if (day.note) {
+                        html += `<div class="warmup-item" style="color: #fbbf24;">⚠️ ${day.note}</div>`;
+                    }
+                }
+
+                if (day.warmup) {
+                    html += `<div class="section">`;
+                    html += `<div class="section-title">Warm-up (5min)</div>`;
+                    day.warmup.forEach(item => {
+                        html += `<div class="warmup-item">• ${item}</div>`;
+                    });
+                    html += `</div>`;
+                }
+
+                if (day.primaryTitle && day.exercises) {
+                    html += `<div class="section">`;
+                    html += `<div class="section-title">${day.primaryTitle}</div>`;
+                    day.exercises.forEach(ex => {
+                        html += `
+                            <div class="exercise-row">
+                                <div class="exercise-name">${ex.name}</div>
+                                <div class="exercise-specs">
+                                    ${ex.weight}
+                                    <span class="exercise-sets">${ex.sets}${ex.rest ? ` | ${ex.rest} rest` : ''}</span>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    html += `</div>`;
+                }
+
+                if (day.secondaryTitle && day.secondaryExercises) {
+                    html += `<div class="section">`;
+                    html += `<div class="section-title">${day.secondaryTitle}</div>`;
+                    day.secondaryExercises.forEach(ex => {
+                        html += `
+                            <div class="exercise-row">
+                                <div class="exercise-name">${ex.name}</div>
+                                <div class="exercise-specs">
+                                    ${ex.weight}
+                                    <span class="exercise-sets">${ex.sets}${ex.rest ? ` | ${ex.rest} rest` : ''}</span>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    html += `</div>`;
+                }
+
+                // Legacy exercises field (for weeks 1-12)
+                if (!day.primaryTitle && day.exercises) {
+                    html += `<div class="section">`;
+                    html += `<div class="section-title">Strength</div>`;
+                    day.exercises.forEach(ex => {
+                        html += `
+                            <div class="exercise-row">
+                                <div class="exercise-name">${ex.name}</div>
+                                <div class="exercise-specs">
+                                    ${ex.weight}
+                                    <span class="exercise-sets">${ex.sets}</span>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    html += `</div>`;
+                }
+
+                if (day.armTitle && day.armExercises) {
+                    html += `<div class="section">`;
+                    html += `<div class="section-title arms">${day.armTitle}</div>`;
+                    day.armExercises.forEach(ex => {
+                        html += `
+                            <div class="exercise-row arm-exercise">
+                                <div class="exercise-name">${ex.name}</div>
+                                <div class="exercise-specs arm-specs">
+                                    ${ex.weight}
+                                    <span class="exercise-sets">${ex.sets}${ex.rest ? ` | ${ex.rest} rest` : ''}</span>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    html += `</div>`;
+                }
+
+                if (day.accessory) {
+                    html += `<div class="section">`;
+                    html += `<div class="section-title">Accessory</div>`;
+                    day.accessory.forEach(item => {
+                        html += `<div class="warmup-item">• ${item}</div>`;
+                    });
+                    html += `</div>`;
+                }
+
+                if (day.cooldown) {
+                    html += `<div class="section">`;
+                    html += `<div class="section-title">Cooldown</div>`;
+                    html += `<div class="warmup-item">🚶 ${day.cooldown}</div>`;
+                    if (day.totalTime) {
+                        html += `<div class="warmup-item">⏱️ Total time: ${day.totalTime}</div>`;
+                    }
+                    html += `</div>`;
+                }
+
+                if (day.checklist) {
+                    html += `<div class="checklist">`;
+                    day.checklist.forEach(item => {
+                        html += `<div class="checklist-item">✓ ${item}</div>`;
+                    });
+                    html += `</div>`;
+                }
+
+                html += `</div>`;
+            });
+
+            content.innerHTML = html;
+        }
+
+        // Initialize with Foundation Phase, Week 1
+        showPhase('foundation');
+    </script>
+</body>
+</html>
