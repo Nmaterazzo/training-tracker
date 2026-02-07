@@ -556,6 +556,17 @@
                 <canvas id="armsChart"></canvas>
             </div>
 
+            
+            <div class="chart-container">
+                <div class="chart-title">🍽️ Calories In vs Out</div>
+                <canvas id="caloriesChart"></canvas>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-title">📉 Daily Calorie Deficit</div>
+                <canvas id="deficitChart"></canvas>
+            </div>
+
             <button class="btn-danger" onclick="confirmClearData()">🗑️ Clear All Measurements</button>
         </div>
     </div>
@@ -571,7 +582,7 @@
         let charts = {};
 
         const phaseWeeks = {
-            'foundation': [1, 2, 3, 4],
+            'foundation': [0, 1, 2, 3, 4],
             'volume': [5, 6, 7, 8],
             'strength': [9, 10, 11, 12],
             'upperlower': [13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]
@@ -580,7 +591,7 @@
         // Weight progressions for weeks 1-12
         const weights = {
             backSquat: [65, 75, 85, 95, 105, 115, 125, 135, 95, 145, 155, 165],
-            frontSquat: [65, 75, 85, 95, 105, 115, 125, 135, 95, 145, 155, 165],
+            frontSquat: [45, 50, 55, 60, 65, 70, 75, 80, 60, 85, 90, 95],
             bench: [45, 50, 55, 60, 65, 70, 75, 80, 55, 85, 90, 95],
             row: [45, 50, 55, 60, 65, 70, 75, 80, 55, 85, 90, 95],
             ohp: [45, 50, 55, 60, 65, 70, 75, 80, 55, 85, 90, 95],
@@ -589,18 +600,18 @@
 
         // Weeks 13-24 weights (upper/lower split)
         const weightsUL = {
-            13: { squat: 175, bench: 100, deadlift: 185, frontSquat: 175, row: 85, curl: 50, cgBench: 80, hammerCurl: 25, ohExtension: 35 },
-            14: { squat: 185, bench: 105, deadlift: 195, frontSquat: 185, row: 90, curl: 55, cgBench: 85, hammerCurl: 27.5, ohExtension: 37.5 },
-            15: { squat: 195, bench: 110, deadlift: 205, frontSquat: 195, row: 95, curl: 60, cgBench: 90, hammerCurl: 30, ohExtension: 40 },
-            16: { squat: 205, bench: 115, deadlift: 215, frontSquat: 205, row: 100, curl: 62.5, cgBench: 95, hammerCurl: 32.5, ohExtension: 42.5 },
-            17: { squat: 145, bench: 80, deadlift: 150, frontSquat: 145, row: 70, curl: 45, cgBench: 65, hammerCurl: 22.5, ohExtension: 30 },
-            18: { squat: 215, bench: 120, deadlift: 225, frontSquat: 215, row: 105, curl: 65, cgBench: 100, hammerCurl: 35, ohExtension: 45 },
-            19: { squat: 225, bench: 125, deadlift: 235, frontSquat: 225, row: 110, curl: 67.5, cgBench: 105, hammerCurl: 37.5, ohExtension: 47.5 },
-            20: { squat: 235, bench: 130, deadlift: 245, frontSquat: 235, row: 115, curl: 70, cgBench: 110, hammerCurl: 40, ohExtension: 50 },
-            21: { squat: 245, bench: 135, deadlift: 255, frontSquat: 245, row: 120, curl: 72.5, cgBench: 115, hammerCurl: 42.5, ohExtension: 52.5 },
-            22: { squat: 175, bench: 95, deadlift: 180, frontSquat: 175, row: 85, curl: 50, cgBench: 80, hammerCurl: 30, ohExtension: 37.5 },
-            23: { squat: 255, bench: 140, deadlift: 265, frontSquat: 255, row: 125, curl: 75, cgBench: 120, hammerCurl: 45, ohExtension: 55 },
-            24: { squat: 265, bench: 145, deadlift: 275, frontSquat: 265, row: 130, curl: 77.5, cgBench: 125, hammerCurl: 47.5, ohExtension: 57.5 }
+            13: { squat: 175, bench: 100, deadlift: 185, frontSquat: 100, row: 85, curl: 50, cgBench: 80, hammerCurl: 25, ohExtension: 35 },
+            14: { squat: 185, bench: 105, deadlift: 195, frontSquat: 105, row: 90, curl: 55, cgBench: 85, hammerCurl: 27.5, ohExtension: 37.5 },
+            15: { squat: 195, bench: 110, deadlift: 205, frontSquat: 110, row: 95, curl: 60, cgBench: 90, hammerCurl: 30, ohExtension: 40 },
+            16: { squat: 205, bench: 115, deadlift: 215, frontSquat: 115, row: 100, curl: 62.5, cgBench: 95, hammerCurl: 32.5, ohExtension: 42.5 },
+            17: { squat: 145, bench: 80, deadlift: 150, frontSquat: 80, row: 70, curl: 45, cgBench: 65, hammerCurl: 22.5, ohExtension: 30 },
+            18: { squat: 215, bench: 120, deadlift: 225, frontSquat: 120, row: 105, curl: 65, cgBench: 100, hammerCurl: 35, ohExtension: 45 },
+            19: { squat: 225, bench: 125, deadlift: 235, frontSquat: 125, row: 110, curl: 67.5, cgBench: 105, hammerCurl: 37.5, ohExtension: 47.5 },
+            20: { squat: 235, bench: 130, deadlift: 245, frontSquat: 130, row: 115, curl: 70, cgBench: 110, hammerCurl: 40, ohExtension: 50 },
+            21: { squat: 245, bench: 135, deadlift: 255, frontSquat: 135, row: 120, curl: 72.5, cgBench: 115, hammerCurl: 42.5, ohExtension: 52.5 },
+            22: { squat: 175, bench: 95, deadlift: 180, frontSquat: 95, row: 85, curl: 50, cgBench: 80, hammerCurl: 30, ohExtension: 37.5 },
+            23: { squat: 255, bench: 140, deadlift: 265, frontSquat: 140, row: 125, curl: 75, cgBench: 120, hammerCurl: 45, ohExtension: 55 },
+            24: { squat: 265, bench: 145, deadlift: 275, frontSquat: 145, row: 130, curl: 77.5, cgBench: 125, hammerCurl: 47.5, ohExtension: 57.5 }
         };
 
         // Load measurements from localStorage
@@ -630,10 +641,36 @@
         }
 
         function generateWeekData(weekNum) {
+            if (weekNum === 0) {
+                return generateWeek0();
+            }
             if (weekNum <= 12) {
                 return generateWeek1to12(weekNum);
             }
             return generateWeek13to24(weekNum);
+        }
+
+        function generateWeek0() {
+            return {
+                progression: 'Baseline measurements - Take these BEFORE starting Week 1',
+                days: [
+                    {
+                        day: "Week 0",
+                        type: "Baseline Measurements",
+                        measurements: true,
+                        checklist: [
+                            "📸 Take progress photos:",
+                            "• Front, side, back (relaxed + flexed)",
+                            "• Same lighting, same location",
+                            "• Save for Week 24 comparison",
+                            "📏 Take all measurements below:",
+                            "• Sunday morning routine",
+                            "• Post-bathroom, naked, fasted",
+                            "✅ Ready to start Week 1 Monday!"
+                        ]
+                    }
+                ]
+            };
         }
 
         function generateWeek1to12(weekNum) {
@@ -702,8 +739,8 @@
                         exercises: [
                             { name: "Front squat", weight: `${weights.frontSquat[idx]}lb`, sets: `${sets} × ${reps}` },
                             { name: "Floor press", weight: `${weights.bench[idx]}lb`, sets: `${sets} × ${reps}` },
-                            { name: "Pendlay row", weight: `${weights.row[idx]}lb`, sets: `${sets} × ${reps}` },
-                            { name: "DB lateral raise", weight: `${10 + Math.floor(weekNum/2) * 2.5}/hand`, sets: `${sets} × ${reps}` },
+                            { name: "Feet-assisted pull-ups", weight: "", sets: `${sets} × ${reps}` },
+                            { name: "DB lateral raise", weight: `${5 + Math.floor(weekNum/2) * 5}lb/hand`, sets: `${sets} × ${reps}` },
                             { name: "Bulgarian split squat", weight: weekNum <= 2 ? 'BW' : `${15 + weekNum * 5}lb`, sets: `${sets} × ${reps}/leg` }
                         ],
                         accessory: weekNum >= 3 ? [
@@ -936,7 +973,7 @@
                 btn.className = (weekNum === 9 || weekNum === 17 || weekNum === 22) ? 'week-btn deload' : 'week-btn';
                 if (measurements[weekNum]) btn.classList.add('logged');
                 if (weekNum === phaseWeeks[phase][0]) btn.classList.add('active');
-                btn.textContent = `W${weekNum}`;
+                btn.textContent = weekNum === 0 ? 'START' : `W${weekNum}`;
                 btn.onclick = () => showWeek(weekNum);
                 weekSelector.appendChild(btn);
             });
@@ -951,7 +988,8 @@
             
             document.querySelectorAll('.week-btn').forEach(btn => {
                 btn.classList.remove('active');
-                if (btn.textContent === `W${weekNum}`) {
+                const expectedText = weekNum === 0 ? 'START' : `W${weekNum}`;
+                if (btn.textContent === expectedText) {
                     btn.classList.add('active');
                 }
             });
@@ -988,6 +1026,7 @@
                     day.warmup.forEach(item => {
                         html += `<div class="warmup-item">• ${item}</div>`;
                     });
+
                     html += `</div>`;
                 }
 
@@ -1094,35 +1133,91 @@
                             <div class="measurement-title">📏 Week ${weekNum} Measurements</div>
                             <div class="input-grid">
                                 <div class="input-group">
-                                    <label class="input-label">Bodyweight (lbs)</label>
+                                    <label class="input-label">⚖️ Weekly Weight (lbs)</label>
                                     <input type="number" step="0.1" id="weight_${weekNum}" class="input-field ${savedData.weight ? 'saved' : ''}" value="${savedData.weight || ''}" placeholder="260.0">
                                 </div>
                                 <div class="input-group">
-                                    <label class="input-label">Waist (inches)</label>
+                                    <label class="input-label">📏 Waist (inches)</label>
                                     <input type="number" step="0.1" id="waist_${weekNum}" class="input-field ${savedData.waist ? 'saved' : ''}" value="${savedData.waist || ''}" placeholder="42.0">
                                 </div>
                                 <div class="input-group">
-                                    <label class="input-label">Arms Flexed (inches)</label>
+                                    <label class="input-label">💪 Arms Flexed (inches)</label>
                                     <input type="number" step="0.1" id="arms_${weekNum}" class="input-field ${savedData.arms ? 'saved' : ''}" value="${savedData.arms || ''}" placeholder="15.0">
                                 </div>
                                 <div class="input-group">
-                                    <label class="input-label">Chest (inches)</label>
+                                    <label class="input-label">🫀 Chest (inches)</label>
                                     <input type="number" step="0.1" id="chest_${weekNum}" class="input-field ${savedData.chest ? 'saved' : ''}" value="${savedData.chest || ''}" placeholder="Optional">
                                 </div>
-                                <div class="input-group">
-                                    <label class="input-label">Shoulders (inches)</label>
-                                    <input type="number" step="0.1" id="shoulders_${weekNum}" class="input-field ${savedData.shoulders ? 'saved' : ''}" value="${savedData.shoulders || ''}" placeholder="Optional">
-                                </div>
-                                <div class="input-group">
-                                    <label class="input-label">Thighs (inches)</label>
-                                    <input type="number" step="0.1" id="thighs_${weekNum}" class="input-field ${savedData.thighs ? 'saved' : ''}" value="${savedData.thighs || ''}" placeholder="Optional">
-                                </div>
                                 <div class="input-group full-width">
-                                    <label class="input-label">Notes</label>
+                                    <label class="input-label">📝 Notes</label>
                                     <input type="text" id="notes_${weekNum}" class="input-field" value="${savedData.notes || ''}" placeholder="Sleep quality, energy, soreness, etc.">
                                 </div>
                             </div>
+
                             <button class="btn-primary" onclick="saveWeekMeasurement(${weekNum})">💾 Save Week ${weekNum} Data</button>
+                        </div>
+                    `;
+                }
+
+
+                // ADD DAILY TRACKING TO ALL DAYS (at the bottom, before card closes)
+                if (weekNum > 0 && !day.measurements) {
+                    const dayKey = day.day.toLowerCase();
+                    const dailyData = (measurements[weekNum] && measurements[weekNum].daily && measurements[weekNum].daily[dayKey]) || {};
+                    
+                    html += `
+                        <div class="measurement-card" style="border-left: 3px solid #3b82f6; margin-top: 15px;">
+                            <div class="measurement-title" style="font-size: 0.95rem; color: #3b82f6;">📊 Daily Tracking - ${day.day}</div>
+                            <div class="input-grid">
+                                <div class="input-group">
+                                    <label class="input-label">Weight (lbs)</label>
+                                    <input type="number" step="0.1" id="daily_weight_${weekNum}_${dayKey}" class="input-field ${dailyData.weight ? 'saved' : ''}" value="${dailyData.weight || ''}" placeholder="259.5">
+                                </div>
+                                <div class="input-group">
+                                    <label class="input-label">Calories In</label>
+                                    <input type="number" id="daily_calsIn_${weekNum}_${dayKey}" class="input-field ${dailyData.calsIn ? 'saved' : ''}" value="${dailyData.calsIn || ''}" placeholder="2600" onchange="updateDeficit(${weekNum}, '${dayKey}')">
+                                </div>
+                                <div class="input-group">
+                                    <label class="input-label">Calories Out</label>
+                                    <input type="number" id="daily_calsOut_${weekNum}_${dayKey}" class="input-field ${dailyData.calsOut ? 'saved' : ''}" value="${dailyData.calsOut || ''}" placeholder="3200" onchange="updateDeficit(${weekNum}, '${dayKey}')">
+                                </div>
+                                <div class="input-group">
+                                    <label class="input-label">Net Deficit</label>
+                                    <input type="text" id="daily_deficit_${weekNum}_${dayKey}" class="input-field" value="${dailyData.calsOut && dailyData.calsIn ? (dailyData.calsOut - dailyData.calsIn) : ''}" placeholder="Auto" readonly style="background: #1e293b; color: ${dailyData.calsOut && dailyData.calsIn && (dailyData.calsOut - dailyData.calsIn) > 0 ? '#10b981' : '#ef4444'};">
+                                </div>
+                            </div>
+                            <button class="btn-primary" style="margin-top: 10px; padding: 8px; font-size: 0.85rem;" onclick="saveDailyData(${weekNum}, '${dayKey}')">💾 Save ${day.day}</button>
+                        </div>
+                    `;
+                }
+                
+                // ADD DAILY TRACKING TO SUNDAY (after weekly measurements)
+                if (day.measurements && weekNum > 0) {
+                    const dayKey = 'sunday';
+                    const dailyData = (measurements[weekNum] && measurements[weekNum].daily && measurements[weekNum].daily[dayKey]) || {};
+                    
+                    html += `
+                        <div class="measurement-card" style="border-left: 3px solid #3b82f6; margin-top: 15px;">
+                            <div class="measurement-title" style="font-size: 0.95rem; color: #3b82f6;">📊 Daily Tracking - Sunday</div>
+                            <div class="input-grid">
+                                <div class="input-group">
+                                    <label class="input-label">Weight (lbs)</label>
+                                    <input type="number" step="0.1" id="daily_weight_${weekNum}_sunday" class="input-field ${dailyData.weight ? 'saved' : ''}" value="${dailyData.weight || ''}" placeholder="259.5">
+                                </div>
+                                <div class="input-group">
+                                    <label class="input-label">Calories In</label>
+                                    <input type="number" id="daily_calsIn_${weekNum}_sunday" class="input-field ${dailyData.calsIn ? 'saved' : ''}" value="${dailyData.calsIn || ''}" placeholder="3500" onchange="updateDeficit(${weekNum}, 'sunday')">
+                                </div>
+                                <div class="input-group">
+                                    <label class="input-label">Calories Out</label>
+                                    <input type="number" id="daily_calsOut_${weekNum}_sunday" class="input-field ${dailyData.calsOut ? 'saved' : ''}" value="${dailyData.calsOut || ''}" placeholder="3200" onchange="updateDeficit(${weekNum}, 'sunday')">
+                                </div>
+                                <div class="input-group">
+                                    <label class="input-label">Net Deficit</label>
+                                    <input type="text" id="daily_deficit_${weekNum}_sunday" class="input-field" value="${dailyData.calsOut && dailyData.calsIn ? (dailyData.calsOut - dailyData.calsIn) : ''}" placeholder="Auto" readonly style="background: #1e293b; color: ${dailyData.calsOut && dailyData.calsIn && (dailyData.calsOut - dailyData.calsIn) > 0 ? '#10b981' : '#ef4444'};">
+                                </div>
+                            </div>
+                            <button class="btn-primary" style="margin-top: 10px; padding: 8px; font-size: 0.85rem;" onclick="saveDailyData(${weekNum}, 'sunday')">💾 Save Sunday</button>
                         </div>
                     `;
                 }
@@ -1131,6 +1226,48 @@
             });
 
             content.innerHTML = html;
+        }
+
+
+        function updateDeficit(weekNum, dayKey) {
+            const calsIn = document.getElementById(`daily_calsIn_${weekNum}_${dayKey}`);
+            const calsOut = document.getElementById(`daily_calsOut_${weekNum}_${dayKey}`);
+            const deficit = document.getElementById(`daily_deficit_${weekNum}_${dayKey}`);
+            
+            if (calsIn && calsOut && deficit && calsIn.value && calsOut.value) {
+                const deficitVal = parseInt(calsOut.value) - parseInt(calsIn.value);
+                deficit.value = deficitVal;
+                deficit.style.color = deficitVal > 0 ? '#10b981' : '#ef4444';
+            }
+        }
+
+        function saveDailyData(weekNum, dayKey) {
+            const weight = document.getElementById(`daily_weight_${weekNum}_${dayKey}`);
+            const calsIn = document.getElementById(`daily_calsIn_${weekNum}_${dayKey}`);
+            const calsOut = document.getElementById(`daily_calsOut_${weekNum}_${dayKey}`);
+            
+            if (!measurements[weekNum]) {
+                measurements[weekNum] = {};
+            }
+            if (!measurements[weekNum].daily) {
+                measurements[weekNum].daily = {};
+            }
+            
+            measurements[weekNum].daily[dayKey] = {
+                weight: weight && weight.value ? parseFloat(weight.value) : null,
+                calsIn: calsIn && calsIn.value ? parseInt(calsIn.value) : null,
+                calsOut: calsOut && calsOut.value ? parseInt(calsOut.value) : null,
+                date: new Date().toISOString()
+            };
+            
+            saveMeasurements(weekNum);
+            
+            // Mark as saved
+            if (weight && weight.value) weight.classList.add('saved');
+            if (calsIn && calsIn.value) calsIn.classList.add('saved');
+            if (calsOut && calsOut.value) calsOut.classList.add('saved');
+            
+            alert(`✅ ${dayKey.charAt(0).toUpperCase() + dayKey.slice(1)} data saved!`);
         }
 
         function saveWeekMeasurement(weekNum) {
@@ -1148,16 +1285,15 @@
                 waist: parseFloat(waist),
                 arms: parseFloat(arms),
                 chest: parseFloat(document.getElementById(`chest_${weekNum}`).value) || null,
-                shoulders: parseFloat(document.getElementById(`shoulders_${weekNum}`).value) || null,
-                thighs: parseFloat(document.getElementById(`thighs_${weekNum}`).value) || null,
                 notes: document.getElementById(`notes_${weekNum}`).value,
                 date: new Date().toISOString()
             };
             
+
             saveMeasurements(weekNum);
             
             // Update input styling
-            ['weight', 'waist', 'arms', 'chest', 'shoulders', 'thighs'].forEach(field => {
+            ['weight', 'waist', 'arms', 'chest'].forEach(field => {
                 const input = document.getElementById(`${field}_${weekNum}`);
                 if (input && input.value) {
                     input.classList.add('saved');
@@ -1223,9 +1359,15 @@
                 </div>
             `;
             
-            renderChart('weightChart', weeks.map(w => `W${w}`), weeks.map(w => measurements[w].weight), 'Bodyweight (lbs)', '#3b82f6');
+            // Weight chart with daily overlay
+            renderWeightChart(weeks);
+            
             renderChart('waistChart', weeks.map(w => `W${w}`), weeks.map(w => measurements[w].waist), 'Waist (inches)', '#f59e0b');
             renderChart('armsChart', weeks.map(w => `W${w}`), weeks.map(w => measurements[w].arms), 'Arms Flexed (inches)', '#10b981');
+            
+            // Calories charts
+            renderCaloriesChart(weeks);
+            renderDeficitChart(weeks);
         }
 
         function renderChart(canvasId, labels, data, label, color) {
@@ -1266,6 +1408,324 @@
                         x: {
                             grid: { color: '#334155' },
                             ticks: { color: '#94a3b8' }
+                        }
+                    }
+                }
+            });
+        }
+
+
+        function renderWeightChart(weeks) {
+            const ctx = document.getElementById('weightChart');
+            
+            if (charts['weightChart']) {
+                charts['weightChart'].destroy();
+            }
+            
+            // Collect all daily weights with proper labels
+            const dailyWeights = [];
+            const dailyLabels = [];
+            const weeklyWeights = [];
+            const weeklyLabels = [];
+            
+            weeks.forEach(w => {
+                const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+                days.forEach((day, idx) => {
+                    if (measurements[w] && measurements[w].daily && measurements[w].daily[day] && measurements[w].daily[day].weight) {
+                        dailyWeights.push(measurements[w].daily[day].weight);
+                        dailyLabels.push(`W${w} ${day.slice(0,3)}`);
+                    } else {
+                        dailyWeights.push(null);
+                        dailyLabels.push(`W${w} ${day.slice(0,3)}`);
+                    }
+                });
+                
+                // Add weekly weight at the end of each week (Sunday position)
+                if (measurements[w] && measurements[w].weight) {
+                    weeklyWeights.push(measurements[w].weight);
+                    weeklyLabels.push(`W${w} Sun`);
+                }
+            });
+            
+            const datasets = [];
+            
+            // Daily weights - light, behind
+            if (dailyWeights.some(w => w !== null)) {
+                datasets.push({
+                    label: 'Daily Weight',
+                    data: dailyWeights,
+                    borderColor: '#93c5fd',
+                    backgroundColor: '#93c5fd22',
+                    borderWidth: 2,
+                    tension: 0.3,
+                    fill: false,
+                    pointRadius: 2,
+                    pointHoverRadius: 4,
+                    spanGaps: true
+                });
+            }
+            
+            // Weekly weights - bold, on top
+            const weeklyData = dailyLabels.map(label => {
+                const match = weeklyLabels.find(wl => wl === label);
+                if (match) {
+                    const idx = weeklyLabels.indexOf(match);
+                    return weeklyWeights[idx];
+                }
+                return null;
+            });
+            
+            datasets.push({
+                label: 'Weekly Weight (Sunday)',
+                data: weeklyData,
+                borderColor: '#3b82f6',
+                backgroundColor: '#3b82f6',
+                borderWidth: 0,
+                pointRadius: 6,
+                pointHoverRadius: 8,
+                pointStyle: 'circle',
+                showLine: false
+            });
+            
+            charts['weightChart'] = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: dailyLabels,
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { 
+                            display: true,
+                            labels: { color: '#94a3b8' }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            grid: { color: '#334155' },
+                            ticks: { color: '#94a3b8' }
+                        },
+                        x: {
+                            grid: { color: '#334155' },
+                            ticks: { 
+                                color: '#94a3b8',
+                                maxRotation: 45,
+                                minRotation: 45
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderCaloriesChart(weeks) {
+            const ctx = document.getElementById('caloriesChart');
+            
+            if (charts['caloriesChart']) {
+                charts['caloriesChart'].destroy();
+            }
+            
+            // Collect all daily calories
+            const dailyCalsIn = [];
+            const dailyCalsOut = [];
+            const dailyLabels = [];
+            const weekBoundaries = [];
+            
+            weeks.forEach((w, widx) => {
+                const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+                days.forEach((day, didx) => {
+                    const dayData = measurements[w] && measurements[w].daily && measurements[w].daily[day];
+                    dailyCalsIn.push(dayData && dayData.calsIn ? dayData.calsIn : null);
+                    dailyCalsOut.push(dayData && dayData.calsOut ? dayData.calsOut : null);
+                    dailyLabels.push(`W${w} ${day.slice(0,3)}`);
+                    
+                    // Mark week boundaries (after Sunday)
+                    if (didx === 6 && widx < weeks.length - 1) {
+                        weekBoundaries.push(dailyLabels.length - 0.5);
+                    }
+                });
+            });
+            
+            // Only render if we have data
+            if (!dailyCalsIn.some(c => c !== null) && !dailyCalsOut.some(c => c !== null)) {
+                ctx.getContext('2d').clearRect(0, 0, ctx.width, ctx.height);
+                return;
+            }
+            
+            charts['caloriesChart'] = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: dailyLabels,
+                    datasets: [
+                        {
+                            label: 'Calories In',
+                            data: dailyCalsIn,
+                            borderColor: '#ef4444',
+                            backgroundColor: '#ef444422',
+                            borderWidth: 2,
+                            tension: 0.3,
+                            fill: false,
+                            spanGaps: true,
+                            pointRadius: 2
+                        },
+                        {
+                            label: 'Calories Out (TDEE)',
+                            data: dailyCalsOut,
+                            borderColor: '#10b981',
+                            backgroundColor: '#10b98122',
+                            borderWidth: 2,
+                            tension: 0.3,
+                            fill: false,
+                            spanGaps: true,
+                            pointRadius: 2
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { 
+                            display: true,
+                            labels: { color: '#94a3b8' }
+                        },
+                        annotation: {
+                            annotations: weekBoundaries.map((x, i) => ({
+                                type: 'line',
+                                xMin: x,
+                                xMax: x,
+                                borderColor: '#475569',
+                                borderWidth: 1,
+                                borderDash: [5, 5]
+                            }))
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            grid: { color: '#334155' },
+                            ticks: { color: '#94a3b8' }
+                        },
+                        x: {
+                            grid: { color: '#334155' },
+                            ticks: { 
+                                color: '#94a3b8',
+                                maxRotation: 45,
+                                minRotation: 45
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderDeficitChart(weeks) {
+            const ctx = document.getElementById('deficitChart');
+            
+            if (charts['deficitChart']) {
+                charts['deficitChart'].destroy();
+            }
+            
+            // Collect all daily deficits
+            const dailyDeficits = [];
+            const dailyLabels = [];
+            
+            weeks.forEach(w => {
+                const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+                days.forEach(day => {
+                    const dayData = measurements[w] && measurements[w].daily && measurements[w].daily[day];
+                    if (dayData && dayData.calsOut && dayData.calsIn) {
+                        dailyDeficits.push(dayData.calsOut - dayData.calsIn);
+                    } else {
+                        dailyDeficits.push(null);
+                    }
+                    dailyLabels.push(`W${w} ${day.slice(0,3)}`);
+                });
+            });
+            
+            // Calculate exponential moving average (EMA)
+            const ema = [];
+            const alpha = 0.2; // Smoothing factor (0.2 = ~10 day period)
+            let emaValue = null;
+            
+            dailyDeficits.forEach(deficit => {
+                if (deficit !== null) {
+                    if (emaValue === null) {
+                        emaValue = deficit;
+                    } else {
+                        emaValue = alpha * deficit + (1 - alpha) * emaValue;
+                    }
+                    ema.push(emaValue);
+                } else {
+                    ema.push(null);
+                }
+            });
+            
+            // Only render if we have data
+            if (!dailyDeficits.some(d => d !== null)) {
+                ctx.getContext('2d').clearRect(0, 0, ctx.width, ctx.height);
+                return;
+            }
+            
+            charts['deficitChart'] = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: dailyLabels,
+                    datasets: [
+                        {
+                            label: 'Daily Deficit',
+                            data: dailyDeficits,
+                            borderColor: '#60a5fa',
+                            backgroundColor: '#60a5fa22',
+                            borderWidth: 1,
+                            tension: 0,
+                            fill: false,
+                            pointRadius: 2,
+                            pointBackgroundColor: dailyDeficits.map(d => d > 0 ? '#10b981' : '#ef4444'),
+                            spanGaps: true
+                        },
+                        {
+                            label: 'EMA Trend',
+                            data: ema,
+                            borderColor: '#f59e0b',
+                            backgroundColor: 'transparent',
+                            borderWidth: 3,
+                            tension: 0.4,
+                            fill: false,
+                            pointRadius: 0,
+                            spanGaps: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { 
+                            display: true,
+                            labels: { color: '#94a3b8' }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { 
+                                color: (context) => {
+                                    return context.tick.value === 0 ? '#94a3b8' : '#334155';
+                                }
+                            },
+                            ticks: { color: '#94a3b8' }
+                        },
+                        x: {
+                            grid: { color: '#334155' },
+                            ticks: { 
+                                color: '#94a3b8',
+                                maxRotation: 45,
+                                minRotation: 45
+                            }
                         }
                     }
                 }
