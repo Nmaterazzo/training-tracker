@@ -1327,14 +1327,31 @@
             
             const first = measurements[weeks[0]];
             const last = measurements[weeks[weeks.length - 1]];
-            const weightChange = last.weight - first.weight;
-            const waistChange = last.waist - first.waist;
-            const armsChange = last.arms - first.arms;
+            
+            // Get most recent daily weight (not just weekly)
+            let mostRecentWeight = last.weight;
+            const allWeeks = [...weeks].reverse();
+            for (const w of allWeeks) {
+                const days = ['sunday', 'saturday', 'friday', 'thursday', 'wednesday', 'tuesday', 'monday'];
+                for (const day of days) {
+                    if (measurements[w] && measurements[w].daily && measurements[w].daily[day] && measurements[w].daily[day].weight) {
+                        mostRecentWeight = measurements[w].daily[day].weight;
+                        break;
+                    }
+                }
+                if (mostRecentWeight !== last.weight) break;
+            }
+            
+            // Calculate changes from Week 0 if it exists, otherwise from first logged week
+            const baseline = measurements[0] || first;
+            const weightChange = mostRecentWeight - baseline.weight;
+            const waistChange = last.waist - baseline.waist;
+            const armsChange = last.arms - baseline.arms;
             
             document.getElementById('statsGrid').innerHTML = `
                 <div class="stat-box">
                     <div class="stat-label">Current Weight</div>
-                    <div class="stat-value">${last.weight} lbs</div>
+                    <div class="stat-value">${mostRecentWeight.toFixed(1)} lbs</div>
                     <div class="stat-change ${weightChange < 0 ? 'positive' : 'negative'}">
                         ${weightChange > 0 ? '+' : ''}${weightChange.toFixed(1)} lbs
                     </div>
@@ -1432,12 +1449,14 @@
             weeks.forEach(w => {
                 const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
                 days.forEach((day, idx) => {
-                    if (measurements[w] && measurements[w].daily && measurements[w].daily[day] && measurements[w].daily[day].weight) {
-                        dailyWeights.push(measurements[w].daily[day].weight);
-                        dailyLabels.push(`W${w} ${day.slice(0,3)}`);
-                    } else {
-                        dailyWeights.push(null);
-                        dailyLabels.push(`W${w} ${day.slice(0,3)}`);
+                    const dayData = measurements[w] && measurements[w].daily && measurements[w].daily[day];
+                    const weight = dayData && dayData.weight ? dayData.weight : null;
+                    dailyWeights.push(weight);
+                    dailyLabels.push(`W${w} ${day.slice(0,3)}`);
+                    
+                    // Debug log
+                    if (weight !== null) {
+                        console.log(`Found weight for W${w} ${day}: ${weight}`);
                     }
                 });
                 
@@ -1540,9 +1559,16 @@
                 const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
                 days.forEach((day, didx) => {
                     const dayData = measurements[w] && measurements[w].daily && measurements[w].daily[day];
-                    dailyCalsIn.push(dayData && dayData.calsIn ? dayData.calsIn : null);
-                    dailyCalsOut.push(dayData && dayData.calsOut ? dayData.calsOut : null);
+                    const calsIn = dayData && dayData.calsIn ? dayData.calsIn : null;
+                    const calsOut = dayData && dayData.calsOut ? dayData.calsOut : null;
+                    dailyCalsIn.push(calsIn);
+                    dailyCalsOut.push(calsOut);
                     dailyLabels.push(`W${w} ${day.slice(0,3)}`);
+                    
+                    // Debug log
+                    if (calsIn !== null || calsOut !== null) {
+                        console.log(`W${w} ${day}: In=${calsIn}, Out=${calsOut}`);
+                    }
                     
                     // Mark week boundaries (after Sunday)
                     if (didx === 6 && widx < weeks.length - 1) {
