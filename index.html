@@ -1318,7 +1318,7 @@
         }
 
         function renderProgressTab() {
-            const weeks = Object.keys(measurements).map(Number).sort((a, b) => a - b);
+            const weeks = Object.keys(measurements).map(Number).filter(w => w > 0).sort((a, b) => a - b);
             
             if (weeks.length === 0) {
                 document.getElementById('statsGrid').innerHTML = '<div class="empty-state" style="grid-column: 1 / -1;"><div class="empty-state-icon">📏</div><div>No measurements yet.<br>Log your first week!</div></div>';
@@ -1356,6 +1356,7 @@
                 <div class="stat-box">
                     <div class="stat-label">Weeks Logged</div>
                     <div class="stat-value">${weeks.length}/24</div>
+                    <div class="stat-change" style="color: #94a3b8; font-size: 0.75rem;">(Week 0 not counted)</div>
                 </div>
             `;
             
@@ -1459,9 +1460,10 @@
                     borderWidth: 2,
                     tension: 0.3,
                     fill: false,
-                    pointRadius: 2,
-                    pointHoverRadius: 4,
-                    spanGaps: true
+                    pointRadius: 3,
+                    pointHoverRadius: 5,
+                    spanGaps: true,
+                    showLine: dailyWeights.filter(w => w !== null).length > 1
                 });
             }
             
@@ -1555,6 +1557,9 @@
                 return;
             }
             
+            const calsInCount = dailyCalsIn.filter(c => c !== null).length;
+            const calsOutCount = dailyCalsOut.filter(c => c !== null).length;
+            
             charts['caloriesChart'] = new Chart(ctx, {
                 type: 'line',
                 data: {
@@ -1569,7 +1574,8 @@
                             tension: 0.3,
                             fill: false,
                             spanGaps: true,
-                            pointRadius: 2
+                            pointRadius: 3,
+                            showLine: calsInCount > 1
                         },
                         {
                             label: 'Calories Out (TDEE)',
@@ -1580,7 +1586,8 @@
                             tension: 0.3,
                             fill: false,
                             spanGaps: true,
-                            pointRadius: 2
+                            pointRadius: 3,
+                            showLine: calsOutCount > 1
                         }
                     ]
                 },
@@ -1670,6 +1677,8 @@
                 return;
             }
             
+            const deficitCount = dailyDeficits.filter(d => d !== null).length;
+            
             charts['deficitChart'] = new Chart(ctx, {
                 type: 'line',
                 data: {
@@ -1683,9 +1692,11 @@
                             borderWidth: 1,
                             tension: 0,
                             fill: false,
-                            pointRadius: 2,
-                            pointBackgroundColor: dailyDeficits.map(d => d > 0 ? '#10b981' : '#ef4444'),
-                            spanGaps: true
+                            pointRadius: 4,
+                            pointHoverRadius: 6,
+                            pointBackgroundColor: dailyDeficits.map(d => d !== null && d > 0 ? '#10b981' : d !== null ? '#ef4444' : '#60a5fa'),
+                            spanGaps: true,
+                            showLine: deficitCount > 1
                         },
                         {
                             label: 'EMA Trend',
@@ -1696,7 +1707,8 @@
                             tension: 0.4,
                             fill: false,
                             pointRadius: 0,
-                            spanGaps: true
+                            spanGaps: true,
+                            showLine: deficitCount > 2
                         }
                     ]
                 },
