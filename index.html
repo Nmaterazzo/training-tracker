@@ -1280,13 +1280,22 @@
                 return;
             }
             
+            // Preserve existing daily data if it exists
+            if (!measurements[weekNum]) {
+                measurements[weekNum] = {};
+            }
+            
+            const existingDaily = measurements[weekNum].daily || {};
+            
+            // Update weekly measurements while preserving daily data
             measurements[weekNum] = {
                 weight: parseFloat(weight),
                 waist: parseFloat(waist),
                 arms: parseFloat(arms),
                 chest: parseFloat(document.getElementById(`chest_${weekNum}`).value) || null,
                 notes: document.getElementById(`notes_${weekNum}`).value,
-                date: new Date().toISOString()
+                date: new Date().toISOString(),
+                daily: existingDaily  // PRESERVE DAILY DATA
             };
             
 
@@ -1348,6 +1357,22 @@
             const waistChange = last.waist - baseline.waist;
             const armsChange = last.arms - baseline.arms;
             
+            // Calculate total calorie deficit for predicted fat loss
+            let totalDeficit = 0;
+            weeks.forEach(w => {
+                if (measurements[w] && measurements[w].daily) {
+                    const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+                    days.forEach(day => {
+                        const dayData = measurements[w].daily[day];
+                        if (dayData && dayData.calsOut && dayData.calsIn) {
+                            totalDeficit += (dayData.calsOut - dayData.calsIn);
+                        }
+                    });
+                }
+            });
+            
+            const predictedFatLoss = totalDeficit / 3500;
+            
             document.getElementById('statsGrid').innerHTML = `
                 <div class="stat-box">
                     <div class="stat-label">Current Weight</div>
@@ -1368,6 +1393,13 @@
                     <div class="stat-value">${last.arms}"</div>
                     <div class="stat-change ${armsChange > 0 ? 'positive' : 'negative'}">
                         ${armsChange > 0 ? '+' : ''}${armsChange.toFixed(1)}"
+                    </div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Predicted Fat Loss</div>
+                    <div class="stat-value">${Math.abs(predictedFatLoss).toFixed(1)} lbs</div>
+                    <div class="stat-change ${predictedFatLoss > 0 ? 'positive' : 'negative'}">
+                        ${totalDeficit > 0 ? 'Deficit' : 'Surplus'}: ${Math.abs(totalDeficit).toLocaleString()} cal
                     </div>
                 </div>
                 <div class="stat-box">
