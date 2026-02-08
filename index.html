@@ -552,8 +552,8 @@
             </div>
 
             <div class="chart-container">
-                <div class="chart-title">💪 Arms (Flexed)</div>
-                <canvas id="armsChart"></canvas>
+                <div class="chart-title">💪 Arms & Neck</div>
+                <canvas id="armsNeckChart"></canvas>
             </div>
 
             
@@ -1145,6 +1145,10 @@
                                     <input type="number" step="0.1" id="arms_${weekNum}" class="input-field ${savedData.arms ? 'saved' : ''}" value="${savedData.arms || ''}" placeholder="15.0">
                                 </div>
                                 <div class="input-group">
+                                    <label class="input-label">🦒 Neck (inches)</label>
+                                    <input type="number" step="0.1" id="neck_${weekNum}" class="input-field ${savedData.neck ? 'saved' : ''}" value="${savedData.neck || ''}" placeholder="16.0">
+                                </div>
+                                <div class="input-group">
                                     <label class="input-label">🫀 Chest (inches)</label>
                                     <input type="number" step="0.1" id="chest_${weekNum}" class="input-field ${savedData.chest ? 'saved' : ''}" value="${savedData.chest || ''}" placeholder="Optional">
                                 </div>
@@ -1292,6 +1296,7 @@
                 weight: parseFloat(weight),
                 waist: parseFloat(waist),
                 arms: parseFloat(arms),
+                neck: parseFloat(document.getElementById(`neck_${weekNum}`).value) || null,
                 chest: parseFloat(document.getElementById(`chest_${weekNum}`).value) || null,
                 notes: document.getElementById(`notes_${weekNum}`).value,
                 date: new Date().toISOString(),
@@ -1302,7 +1307,7 @@
             saveMeasurements(weekNum);
             
             // Update input styling
-            ['weight', 'waist', 'arms', 'chest'].forEach(field => {
+            ['weight', 'waist', 'arms', 'neck', 'chest'].forEach(field => {
                 const input = document.getElementById(`${field}_${weekNum}`);
                 if (input && input.value) {
                     input.classList.add('saved');
@@ -1413,7 +1418,7 @@
             renderWeightChart(weeks);
             
             renderChart('waistChart', weeks.map(w => `W${w}`), weeks.map(w => measurements[w].waist), 'Waist (inches)', '#f59e0b');
-            renderChart('armsChart', weeks.map(w => `W${w}`), weeks.map(w => measurements[w].arms), 'Arms Flexed (inches)', '#10b981');
+            renderArmsNeckChart(weeks);
             
             // Calories charts
             renderCaloriesChart(weeks);
@@ -1464,6 +1469,71 @@
             });
         }
 
+
+        
+        function renderArmsNeckChart(weeks) {
+            const ctx = document.getElementById('armsNeckChart');
+            
+            if (charts['armsNeckChart']) {
+                charts['armsNeckChart'].destroy();
+            }
+            
+            const armsData = weeks.map(w => measurements[w].arms);
+            const neckData = weeks.map(w => measurements[w].neck || null);
+            
+            charts['armsNeckChart'] = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: weeks.map(w => `W${w}`),
+                    datasets: [
+                        {
+                            label: 'Arms Flexed (inches)',
+                            data: armsData,
+                            borderColor: '#10b981',
+                            backgroundColor: '#10b98122',
+                            borderWidth: 3,
+                            tension: 0.4,
+                            fill: true,
+                            pointRadius: 4,
+                            pointHoverRadius: 6
+                        },
+                        {
+                            label: 'Neck (inches)',
+                            data: neckData,
+                            borderColor: '#f59e0b',
+                            backgroundColor: '#f59e0b22',
+                            borderWidth: 3,
+                            tension: 0.4,
+                            fill: true,
+                            pointRadius: 4,
+                            pointHoverRadius: 6,
+                            spanGaps: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { 
+                            display: true,
+                            labels: { color: '#94a3b8' }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            grid: { color: '#334155' },
+                            ticks: { color: '#94a3b8' }
+                        },
+                        x: {
+                            grid: { color: '#334155' },
+                            ticks: { color: '#94a3b8' }
+                        }
+                    }
+                }
+            });
+        }
 
         function renderWeightChart(weeks) {
             const ctx = document.getElementById('weightChart');
